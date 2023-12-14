@@ -2,13 +2,10 @@
 FROM node:14
 
 # Set the working directory in the container
-WORKDIR /app
-
-# Install app dependencies
-RUN npm install
+WORKDIR /home/ubuntu/coursework2
 
 # Copy the application files to the working directory
-COPY . .
+COPY server.js ./
 
 # Expose the port on which your app will run
 EXPOSE 8080
