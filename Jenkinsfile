@@ -40,10 +40,8 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    withCredentials([sshUserPrivateKey(credentialsId: 'my-ssh-key', keyFileVariable: 'SSH_PRIVATE_KEY')]) {
-                        sh "echo \"${SSH_PRIVATE_KEY}\" > private_key.pem"
-                        sh "chmod 600 private_key.pem"
-                        sh "ssh -i private_key.pem ubuntu@54.165.60.208 'kubectl get deployments && kubectl set image deployments/${K8S_DEPLOYMENT_NAME} ${K8S_DEPLOYMENT_NAME}=${DOCKER_IMAGE_NAME}:${BUILD_ID} --namespace=${K8S_NAMESPACE}'"
+                    sshagent(['my-ssh-key']) {
+                        sh "ssh ubuntu@54.165.60.208 'kubectl get deployments && kubectl set image deployments/${K8S_DEPLOYMENT_NAME} ${K8S_DEPLOYMENT_NAME}=${DOCKER_IMAGE_NAME}:${BUILD_ID} --namespace=${K8S_NAMESPACE}'"
                     }
                 }
             }
