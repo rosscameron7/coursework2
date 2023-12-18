@@ -5,7 +5,7 @@ pipeline {
         DOCKER_IMAGE_NAME = 'rosscameron/coursework2'
         K8S_DEPLOYMENT_NAME = 'coursework2-deployment'
         K8S_NAMESPACE = 'default'
-        SSH_CREDENTIAL_ID = 'my-ssh-key-id' // Replace with your actual credential ID
+        SSH_CREDENTIAL_ID = 'my-ssh-key-id'
     }
 
     stages {
@@ -34,7 +34,7 @@ pipeline {
         stage('Pushing Docker Image') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'dockerhub', variable: 'DOCKER_PASSWORD')]) {
+                    withCredentials([string(credentialsId: 'Dockerhub', variable: 'DOCKER_PASSWORD')]) {
                         sh "echo ${DOCKER_PASSWORD} | docker login --username rosscameron7 --password-stdin"
                         sh "docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_ID} ."
                         sh "docker push ${DOCKER_IMAGE_NAME}:${BUILD_ID}"
