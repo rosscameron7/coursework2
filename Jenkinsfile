@@ -26,10 +26,14 @@ pipeline {
                 }
             }
         }
-        stage('Pushing Docker Image') {
+        stage('Building and Pushing Docker Image') {
             steps {
                 script {
-                    sh "docker push ${DOCKER_IMAGE_NAME}:${BUILD_ID}"
+                    withCredentials([string(credentialsId: 'dckr_pat_5Re2eaMticrJtupcX6b27UhSXJg', variable: 'DOCKER_PASSWORD')]) {
+                        sh "echo ${DOCKER_PASSWORD} | docker login --username rosscameron7 --password-stdin"
+                        sh "docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_ID} ."
+                        sh "docker push ${DOCKER_IMAGE_NAME}:${BUILD_ID}"
+                    }
                 }
             }
         }
