@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE_NAME = 'rosscameron7/coursework2'
+        DOCKER_IMAGE_NAME = 'rosscameron/coursework2'
         K8S_DEPLOYMENT_NAME = 'coursework2-deployment'
         K8S_NAMESPACE = 'default'
     }
@@ -26,7 +26,7 @@ pipeline {
                 }
             }
         }
-        stage('Push Docker Image') {
+        stage('Pushing Docker Image') {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'Dockerhub', variable: 'DOCKER_PASSWORD')]) {
@@ -37,10 +37,12 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to Kubernetes') {
+        stage('Deploy to Kubernetes nodes') {
             steps {
                 script {
-                    sh "kubectl set image deployment/${K8S_DEPLOYMENT_NAME} ${K8S_DEPLOYMENT_NAME}=${DOCKER_IMAGE_NAME}:${BUILD_ID} --namespace=${K8S_NAMESPACE}"
+                    sshagent(credentials: [SSH_CREDENTIAL_ID]) {
+                        sh "ssh ubuntu@54.165.60.208 'kubectl set image deployments/${K8S_DEPLOYMENT_NAME} ${K8S_DEPLOYMENT_NAME}=${DOCKER_IMAGE_NAME}:${BUILD_ID} --namespace=${K8S_NAMESPACE}'"
+                    }
                 }
             }
         }
