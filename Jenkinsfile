@@ -17,9 +17,9 @@ pipeline {
                     def containerId = sh(script: "docker run -d ${DOCKER_IMAGE_NAME}:${BUILD_ID} sleep 5", returnStdout: true).trim()
                     def exitCode = sh(script: "docker wait ${containerId}", returnStatus: true)
                     if (exitCode == 0) {
-                        echo "Container launched successfully."
+                        echo "The container has been launched successfully."
                     } else {
-                        error "Container launch failed."
+                        error "The countainer launch has failed."
                     }
                 }
             }
