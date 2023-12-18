@@ -8,7 +8,7 @@ WORKDIR /home/ubuntu/coursework2
 COPY server.js ./
 
 # Expose the port on which your app will run
-EXPOSE 8080
+EXPOSE 8081
 
 # Define the command to run your application
 CMD ["node", "server.js"]
