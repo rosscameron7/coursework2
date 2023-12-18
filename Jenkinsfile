@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE_NAME = 'rosscameron/coursework2'
+        DOCKER_IMAGE_NAME = 'rosscameron7/coursework2'
         K8S_DEPLOYMENT_NAME = 'coursework2-deployment'
         K8S_NAMESPACE = 'default'
     }
@@ -26,7 +26,7 @@ pipeline {
                 }
             }
         }
-        stage('Pushing Docker Image') {
+        stage('Push Docker Image') {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'Dockerhub', variable: 'DOCKER_PASSWORD')]) {
