@@ -42,3 +42,7 @@ pipeline {
                 script {
                     sh "kubectl set image deployment/${K8S_DEPLOYMENT_NAME} ${K8S_DEPLOYMENT_NAME}=${DOCKER_IMAGE_NAME}:${BUILD_ID} --namespace=${K8S_NAMESPACE}"
                 }
+            }
+        }
+    }
+}
