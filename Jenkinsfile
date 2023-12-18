@@ -4,14 +4,14 @@ pipeline {
         DOCKER_IMAGE_NAME = 'rosscameron/coursework2'
     }
     stages {
-        stage('Build Docker Image') {
+        stage('Building Docker Image') {
             steps {
                 script {
                     sh "docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_ID} ."
                 }
             }
         }
-        stage('Test Docker Image') {
+        stage('Image Test') {
             steps {
                 script {
                     def containerId = sh(script: "docker run -d ${DOCKER_IMAGE_NAME}:${BUILD_ID} sleep 5", returnStdout: true).trim()
