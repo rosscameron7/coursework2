@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE_NAME = 'rosscameron/coursework2'
+        DOCKER_IMAGE_NAME = 'rosscameron7/coursework2'
         K8S_DEPLOYMENT_NAME = 'coursework2-deployment'
         K8S_NAMESPACE = 'default'
     }
@@ -26,10 +26,10 @@ pipeline {
                 }
             }
         }
-        stage('Building and Pushing Docker Image') {
+        stage('Push Docker Image') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'dckr_pat_5Re2eaMticrJtupcX6b27UhSXJg', variable: 'DOCKER_PASSWORD')]) {
+                    withCredentials([string(credentialsId: 'Dockerhub', variable: 'DOCKER_PASSWORD')]) {
                         sh "echo ${DOCKER_PASSWORD} | docker login --username rosscameron7 --password-stdin"
                         sh "docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_ID} ."
                         sh "docker push ${DOCKER_IMAGE_NAME}:${BUILD_ID}"
