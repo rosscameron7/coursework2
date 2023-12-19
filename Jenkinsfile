@@ -40,7 +40,8 @@ pipeline {
             steps {
                 script {
                     sshagent(credentials: ['my-ssh-key']) {
-                        sh "ssh ubuntu@54.205.117.197 'kubectl get deployments && kubectl set image deployments/coursework2-deployment coursework2-deployment=rosscameron7/coursework2:${BUILD_ID} --namespace=default'"
+                        def podName = sh(script: "kubectl get pods --selector=app=coursework2-deployment -o jsonpath='{.items[0].metadata.name}' --namespace=default", returnStdout: true).trim()
+                        sh "kubectl set image pod/${podName} coursework2-deployment=rosscameron7/coursework2:${BUILD_ID} --namespace=default"
                     }
                 }
             }
