@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE_NAME = 'rosscameron7/coursework2'
-        K8S_DEPLOYMENT_NAME = 'coursework2-deployment-7454bb98dd-kg5mk'
+        K8S_DEPLOYMENT_NAME = 'coursework2-deployment'
         K8S_NAMESPACE = 'default'
     }
 
