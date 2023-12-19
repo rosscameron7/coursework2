@@ -1,47 +1,50 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_IMAGE_NAME = 'rosscameron7/coursework2'
+    }
+
     stages {
-        stage('Building Docker Image') {
+        stage('Build Docker Image') {
             steps {
                 script {
-                    sh "docker build -t rosscameron7/coursework2:${BUILD_ID} ."
+                    sh "docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_ID} ."
                 }
             }
         }
 
-        stage('Image Test') {
+        stage('Test Docker Image') {
             steps {
                 script {
-                    def containerId = sh(script: "docker run -d rosscameron7/coursework2:${BUILD_ID} sleep 5", returnStdout: true).trim()
+                    def containerId = sh(script: "docker run -d ${DOCKER_IMAGE_NAME}:${BUILD_ID} sleep 5", returnStdout: true).trim()
                     def exitCode = sh(script: "docker wait ${containerId}", returnStatus: true)
+
                     if (exitCode == 0) {
-                        echo "The container has been launched successfully."
+                        echo "Container launched successfully."
                     } else {
-                        error "The container launch has failed."
+                        error "Container launch failed."
                     }
                 }
             }
         }
 
-        stage('Push Docker Image') {
+        stage('Push to DockerHub') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'Dockerhub', variable: 'DOCKER_PASSWORD')]) {
-                        sh "echo ${DOCKER_PASSWORD} | docker login --username rosscameron7 --password-stdin"
-                        sh "docker build -t rosscameron7/coursework2:${BUILD_ID} ."
-                        sh "docker push rosscameron7/coursework2:${BUILD_ID}"
+                    // Push the Docker image to DockerHub
+                    withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
+                        sh "docker push ${DOCKER_IMAGE_NAME}:${BUILD_ID}"
                     }
                 }
             }
         }
 
         stage('Deploy to Kubernetes nodes') {
-            steps {
+             steps {
                 script {
-                    sshagent(credentials: ['my-ssh-key']) {
-                        def podName = sh(script: "kubectl get pods --selector=app=coursework2-deployment -o jsonpath='{.items[0].metadata.name}' --namespace=default", returnStdout: true).trim()
-                        sh "kubectl set image pod/${podName} coursework2-deployment=rosscameron7/coursework2:${BUILD_ID} --namespace=default"
+                    sshagent(['my-ssh-key']) {
+                 sh "ssh ubuntu@54.205.117.197 'kubectl get deployments && kubectl set image deployments/coursework2 coursework2=${DOCKER_IMAGE_NAME}:${BUILD_ID}'"
                     }
                 }
             }
