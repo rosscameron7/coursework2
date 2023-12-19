@@ -1,17 +1,11 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_IMAGE_NAME = 'rosscameron7/coursework2'
-        K8S_DEPLOYMENT_NAME = 'coursework2-deployment'
-        K8S_NAMESPACE = 'default'
-    }
-
     stages {
         stage('Building Docker Image') {
             steps {
                 script {
-                    sh "docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_ID} ."
+                    sh "docker build -t rosscameron7/coursework2:${BUILD_ID} ."
                 }
             }
         }
@@ -19,7 +13,7 @@ pipeline {
         stage('Image Test') {
             steps {
                 script {
-                    def containerId = sh(script: "docker run -d ${DOCKER_IMAGE_NAME}:${BUILD_ID} sleep 5", returnStdout: true).trim()
+                    def containerId = sh(script: "docker run -d rosscameron7/coursework2:${BUILD_ID} sleep 5", returnStdout: true).trim()
                     def exitCode = sh(script: "docker wait ${containerId}", returnStatus: true)
                     if (exitCode == 0) {
                         echo "The container has been launched successfully."
@@ -35,8 +29,8 @@ pipeline {
                 script {
                     withCredentials([string(credentialsId: 'Dockerhub', variable: 'DOCKER_PASSWORD')]) {
                         sh "echo ${DOCKER_PASSWORD} | docker login --username rosscameron7 --password-stdin"
-                        sh "docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_ID} ."
-                        sh "docker push ${DOCKER_IMAGE_NAME}:${BUILD_ID}"
+                        sh "docker build -t rosscameron7/coursework2:${BUILD_ID} ."
+                        sh "docker push rosscameron7/coursework2:${BUILD_ID}"
                     }
                 }
             }
@@ -46,7 +40,7 @@ pipeline {
             steps {
                 script {
                     sshagent(credentials: ['my-ssh-key']) {
-                        sh "ssh ubuntu@54.205.117.197 'kubectl get deployments && kubectl set image deployments/${K8S_DEPLOYMENT_NAME} ${K8S_DEPLOYMENT_NAME}=${DOCKER_IMAGE_NAME}:${BUILD_ID} --namespace=${K8S_NAMESPACE}'"
+                        sh "ssh ubuntu@54.205.117.197 'kubectl get deployments && kubectl set image deployments/coursework2-deployment coursework2-deployment=rosscameron7/coursework2:${BUILD_ID} --namespace=default'"
                     }
                 }
             }
