@@ -46,7 +46,7 @@ pipeline {
             steps {
                 script {
                     sshagent(credentials: ['my-ssh-key']) {
-                        sh "ssh ubuntu@54.165.60.208 'kubectl get deployments && kubectl set image deployments/${K8S_DEPLOYMENT_NAME} ${K8S_DEPLOYMENT_NAME}=${DOCKER_IMAGE_NAME}:${BUILD_ID} --namespace=${K8S_NAMESPACE}'"
+                        sh "ssh ubuntu@54.205.117.197 'kubectl get deployments && kubectl set image deployments/${K8S_DEPLOYMENT_NAME} ${K8S_DEPLOYMENT_NAME}=${DOCKER_IMAGE_NAME}:${BUILD_ID} --namespace=${K8S_NAMESPACE}'"
                     }
                 }
             }
