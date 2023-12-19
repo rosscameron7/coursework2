@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE_NAME = 'coursework2'
+        DOCKER_IMAGE_NAME = 'rosscameron7/coursework2'
         K8S_DEPLOYMENT_NAME = 'coursework2-deployment'
         K8S_NAMESPACE = 'default'
     }
