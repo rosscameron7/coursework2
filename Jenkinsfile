@@ -33,7 +33,7 @@ pipeline {
             steps {
                 script {
                     // Push the Docker image to DockerHub
-                    withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
+                    withDockerRegistry([credentialsId: 'Dockerhub', url: '']) {
                         sh "docker push ${DOCKER_IMAGE_NAME}:${BUILD_ID}"
                     }
                 }
